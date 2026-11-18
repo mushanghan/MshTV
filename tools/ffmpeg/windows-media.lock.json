@@ -1,0 +1,9 @@
+{
+  "build": "9.0.2-mshtv-win-x64",
+  "platform": "win-x64",
+  "license": "LGPL-2.1-or-later",
+  "sha256": {
+    "ffmpeg": "A3F10609DDA4D16647E433264D4E9DFB62A228D008389A468E42C19BBA8CEF55",
+    "ffprobe": "0DC38789800F93E75F561F91A15BAAB67899E77E791428921D476F2DA2CE9BD2"
+  }
+}

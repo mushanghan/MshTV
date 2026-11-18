@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>MshTV</AssemblyName>
+    <Product>MshTV</Product>
+    <ApplicationIcon>Assets/MshTV.ico</ApplicationIcon>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets/Tray.ico" LogicalName="MshTV.Tray.ico" />
+    <ProjectReference Include="../MshTV.Infrastructure/MshTV.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

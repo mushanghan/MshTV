@@ -1,0 +1,13 @@
+import { spawn } from 'node:child_process';
+import { mkdtempSync, mkdirSync, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+const root = resolve('../..');
+mkdirSync(resolve(root, '.data'), { recursive: true });
+const data = mkdtempSync(resolve(root, '.data/e2e-'));
+const localDotnet = resolve(root, '.tools/dotnet/dotnet.exe');
+const binary = process.env.MSHTV_TEST_SERVER_DLL;
+const args = binary ? [resolve(root, binary)] : ['run', '--no-build', '--project', 'src/MshTV.Server/MshTV.Server.csproj'];
+const child = spawn(existsSync(localDotnet) ? localDotnet : 'dotnet', args, { cwd: root, stdio: 'inherit', env: { ...process.env, MSHTV_DATA_DIR: data, MSHTV_PORT: '5198', DOTNET_CLI_TELEMETRY_OPTOUT: '1' } });
+process.on('SIGTERM', () => child.kill());
+process.on('SIGINT', () => child.kill());
+child.on('exit', code => process.exit(code ?? 0));

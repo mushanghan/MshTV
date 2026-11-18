@@ -1,0 +1,9 @@
+{
+  "build": "9.0.1-full_build-www.gyan.dev",
+  "platform": "win-x64",
+  "licenseFlags": ["--enable-gpl", "--enable-version3"],
+  "sha256": {
+    "ffmpeg": "57C56E369D5B4873B4D93FC1A1D833CB7CD8BC9325C14B05C34CE60B22842D8A",
+    "ffprobe": "AFE05347CAAABE479B3C4EAE71992B6EC1E11C57266A1D665DEB0F9FE9847208"
+  }
+}

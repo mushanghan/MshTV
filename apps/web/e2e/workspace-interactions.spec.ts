@@ -1,0 +1,164 @@
+import { expect, test } from '@playwright/test';
+import type Konva from 'konva';
+
+test('the workspace supports background creation, board drag, direct ungrouping and in-place recycling', async ({ page }) => {
+  const groupName = '拖入目标组';
+  const boardName = '工作面板测试画布';
+  const createMenu = page.getByRole('group', { name: '创建菜单' });
+  const dialog = page.getByRole('dialog');
+  const groupLink = page.getByRole('button', { name: `打开画布组 ${groupName}`, exact: true });
+  const groupCard = page.getByRole('article').filter({ has: groupLink });
+  const cover = page.getByRole('link', { name: `打开画布 ${boardName}`, exact: true });
+  const home = page.getByRole('button', { name: '工作空间', exact: true });
+  const background = { x: 1110, y: 755 };
+  let browserDialogs = 0;
+  page.on('dialog', prompt => { browserDialogs++; void prompt.dismiss(); });
+
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: '新建独立画布' })).toBeEnabled();
+  await page.getByRole('textbox', { name: '搜索工作空间' }).dblclick();
+  await expect(createMenu).toHaveCount(0);
+  await page.mouse.dblclick(background.x, background.y);
+  await createMenu.getByRole('button', { name: '新建画布组' }).click();
+  await dialog.getByRole('textbox', { name: '名称' }).fill(groupName);
+  await dialog.getByRole('button', { name: '新建画布组' }).click();
+  await expect(page.getByRole('heading', { name: groupName })).toBeVisible();
+  await page.mouse.dblclick(background.x, background.y);
+  await expect(createMenu.getByRole('button', { name: '新建画布', exact: true })).toBeVisible();
+  await expect(createMenu.getByRole('button', { name: '新建画布组' })).toHaveCount(0);
+  await page.keyboard.press('Escape');
+  await expect(createMenu).toHaveCount(0);
+  await home.click();
+
+  await page.mouse.dblclick(background.x, background.y);
+  await createMenu.getByRole('button', { name: '新建画布', exact: true }).click();
+  await dialog.getByRole('textbox', { name: '名称' }).fill(boardName);
+  await dialog.getByRole('button', { name: '新建画布', exact: true }).click();
+  await expect(page.getByText('已保存到本机', { exact: true })).toBeVisible();
+  const boardId = new URL(page.url()).searchParams.get('board');
+  expect(boardId).toBeTruthy();
+  await page.getByRole('button', { name: '添加文字备注' }).click();
+  await page.getByRole('button', { name: '返回工作空间' }).click();
+
+  await groupCard.hover();
+  await expect(groupCard).toHaveCSS('translate', '0px -4px');
+  const from = (await cover.boundingBox())!;
+  const to = (await groupCard.boundingBox())!;
+  await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(to.x + 25, to.y + 23, { steps: 10 });
+  await page.mouse.move(to.x + 26, to.y + 24);
+  await expect(groupCard).toHaveAttribute('data-drop-active', 'true');
+  await page.mouse.up();
+  await expect(cover).toHaveCount(0);
+  await expect(groupCard.getByText('1 张画布 · 共享素材库')).toBeVisible();
+  await groupLink.click();
+  await cover.click();
+  await expect(page).toHaveURL(new RegExp(`[?]board=${boardId}$`));
+  await expect(page.getByTestId('item-count')).toContainText('1 个元素');
+  await page.getByRole('button', { name: '返回工作空间' }).click();
+  await groupLink.click();
+  await page.getByRole('button', { name: `${boardName}的操作` }).click();
+  await page.getByRole('button', { name: '移出为独立画布' }).click();
+  await expect(cover).toHaveCount(0);
+  await expect(dialog).toHaveCount(0);
+  await home.click();
+  await expect(cover).toBeVisible();
+
+  const recycle = page.getByRole('button', { name: `回收画布 ${boardName}`, exact: true });
+  const confirm = page.getByRole('button', { name: `确认回收画布 ${boardName}`, exact: true });
+  await recycle.hover();
+  await expect(page.locator('.workspace-board-card').filter({ has: recycle })).toHaveCSS('translate', '0px -4px');
+  const position = await recycle.boundingBox();
+  await recycle.click();
+  await expect(confirm.getByText('确认回收', { exact: true })).toBeVisible();
+  expect(await confirm.boundingBox()).toEqual(position);
+  await expect(cover).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(recycle).toBeVisible();
+  await recycle.click();
+  await page.getByRole('textbox', { name: '搜索工作空间' }).click();
+  await expect(recycle).toBeVisible();
+  await recycle.click();
+  await confirm.click();
+  await expect(cover).toHaveCount(0);
+  await page.getByRole('button', { name: '回收站', exact: true }).click();
+  await page.getByRole('button', { name: '恢复画布', exact: true }).click();
+  await dialog.getByRole('button', { name: '恢复', exact: true }).click();
+  await expect(dialog).toHaveCount(0);
+  await home.click();
+
+  await cover.dragTo(groupCard);
+  await expect(groupCard.getByText('1 张画布 · 共享素材库')).toBeVisible();
+  await groupCard.getByRole('button', { name: `回收画布组 ${groupName}`, exact: true }).click();
+  const confirmGroup = groupCard.getByRole('button', { name: `确认回收画布组 ${groupName}`, exact: true });
+  await expect(confirmGroup.getByText('确认回收组及 1 张画布')).toBeVisible();
+  await expect(groupLink).toBeVisible();
+  await confirmGroup.click();
+  await expect(groupLink).toHaveCount(0);
+  await page.getByRole('button', { name: '回收站', exact: true }).click();
+  await page.getByRole('button', { name: '恢复画布组', exact: true }).click();
+  await dialog.getByRole('button', { name: '恢复', exact: true }).click();
+  await expect(dialog).toHaveCount(0);
+  await home.click();
+  await groupLink.click();
+  await expect(cover).toBeVisible();
+  expect(browserDialogs).toBe(0);
+});
+
+test('reopening a board restores its own pan and zoom', async ({ page, context }) => {
+  const saved = page.getByText('已保存到本机', { exact: true });
+  const dialog = page.getByRole('dialog');
+  const leave = page.getByRole('button', { name: '返回工作空间' });
+  const createBoard = async (name: string) => {
+    await page.getByRole('button', { name: '新建独立画布' }).click();
+    await dialog.getByRole('textbox', { name: '名称' }).fill(name);
+    await dialog.getByRole('button', { name: '新建画布', exact: true }).click();
+    await expect(saved).toBeVisible();
+  };
+  const camera = (tab = page) => tab.evaluate(() => {
+    const stage = (window as Window & { Konva: typeof Konva }).Konva.stages[0];
+    return { x: stage.x(), y: stage.y(), scale: stage.scaleX() };
+  });
+
+  await page.goto('/');
+  await createBoard('视角测试 A');
+  await page.getByRole('button', { name: '添加文字备注' }).click();
+  await page.getByRole('button', { name: '保存画布' }).click();
+  await expect(saved).toBeVisible();
+  const boardPath = `/api/v1/boards/${new URL(page.url()).searchParams.get('board')}`;
+  const snapshot = () => page.evaluate(async path => (await fetch(path)).json(), boardPath);
+  const before = await snapshot();
+
+  const canvas = (await page.locator('[data-canvas-host]').boundingBox())!;
+  await page.mouse.move(canvas.x + 72, canvas.y + 55);
+  await page.mouse.down({ button: 'middle' });
+  await page.mouse.move(canvas.x + 142, canvas.y + 97, { steps: 5 });
+  await page.mouse.up({ button: 'middle' });
+  await expect.poll(camera).toEqual({ x: 170, y: 142, scale: 1 });
+  await page.getByRole('button', { name: '放大', exact: true }).click();
+  const firstView = await camera();
+  expect(firstView.scale).toBe(1.2);
+  await leave.click();
+
+  await createBoard('视角测试 B');
+  expect(await camera()).toEqual({ x: 100, y: 100, scale: 1 });
+  await page.getByRole('button', { name: '缩小', exact: true }).click();
+  const secondView = await camera();
+  expect(secondView.scale).toBeLessThan(1);
+  await leave.click();
+  await page.getByRole('link', { name: '打开画布 视角测试 A' }).click();
+  await expect(saved).toBeVisible();
+  await expect.poll(camera).toEqual(firstView);
+  await page.reload();
+  await expect(saved).toBeVisible();
+  await expect.poll(camera).toEqual(firstView);
+  expect(await snapshot()).toEqual(before);
+
+  const reopened = await context.newPage();
+  await page.close();
+  await reopened.goto('/');
+  await reopened.getByRole('link', { name: '打开画布 视角测试 B' }).click();
+  await expect(reopened.getByText('已保存到本机', { exact: true })).toBeVisible();
+  await expect.poll(() => camera(reopened)).toEqual(secondView);
+});
