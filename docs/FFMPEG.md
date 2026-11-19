@@ -4,7 +4,7 @@ MshTV 的 Windows 发布包内置 FFmpeg 9.0.2 和 ffprobe。它们作为独立�
 
 ## 对应源码与许可证
 
-[v0.9.3 的 Release](https://github.com/mushanghan/MshTV/releases/tag/v0.9.3) 同时提供 Windows 安装包、媒体工具和对应源码包。源码包包含未修改的上游源文件归档及实际使用的构建脚本。
+[v0.9.4 的 Release](https://github.com/mushanghan/MshTV/releases/tag/v0.9.4) 同时提供 Windows 安装包、媒体工具和对应源码包。源码包包含未修改的上游源文件归档及实际使用的构建脚本。
 
 | 组件 | 来源 | 许可证 |
 | --- | --- | --- |
@@ -29,5 +29,5 @@ pwsh -File tools/ffmpeg/build-media.ps1 -Sources C:/ffmpeg-sources `
 构建官方安装包可使用 Release 中的 `MshTV-Windows-MediaTools-x64.zip`。解压后将包含 `ffmpeg.exe`、`ffprobe.exe` 和 `licenses/` 的目录传给构建脚本。官方分发流程使用 [媒体二进制校验清单](../tools/ffmpeg/windows-media.lock.json) 核对两个程序，编译环境变化后需重新记录校验值与对应构建材料。安装与运行时均从本地读取组件。
 
 ```powershell
-pwsh -File tools/build-windows.ps1 -Version 0.9.3 -MediaKit C:/mshtv-media-build/media-kit
+pwsh -File tools/build-windows.ps1 -Version 0.9.4 -MediaKit C:/mshtv-media-build/media-kit
 ```

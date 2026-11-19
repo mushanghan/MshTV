@@ -1,6 +1,10 @@
-# MshTV
+<p align="center">
+  <img src="docs/images/app-icon.png" alt="MshTV 应用图标" width="104" height="104">
+</p>
 
-**在一张自由画布上整理图片、视频、录音和镜头备注。**
+<h1 align="center">MshTV</h1>
+
+<p align="center"><strong>在一张自由画布上整理图片、视频、录音和镜头备注。</strong></p>
 
 MshTV 是面向影视创作和个人素材整理的本地工作台。由 Windows 主机管理项目和文件，你可以在本机打开工作空间，也可以从局域网里的 Mac、Windows 或平板进入同一个浏览器界面。项目数据保存在自己的主机上，日常使用无需云服务或互联网。
 
@@ -10,7 +14,7 @@ MshTV 是面向影视创作和个人素材整理的本地工作台。由 Windows
 
 ## 下载与启动
 
-**[下载 Windows x64 安装包](https://github.com/mushanghan/MshTV/releases/download/v0.9.3/MshTV-Setup-0.9.3-win-x64.exe)** · [版本与校验文件](https://github.com/mushanghan/MshTV/releases/tag/v0.9.3)
+**[下载 Windows x64 安装包](https://github.com/mushanghan/MshTV/releases/download/v0.9.4/MshTV-Setup-0.9.4-win-x64.exe)** · [版本与校验文件](https://github.com/mushanghan/MshTV/releases/tag/v0.9.4)
 
 安装包约 105 MiB，支持 Windows 10 21H2 及更新版本。
 
@@ -18,11 +22,24 @@ MshTV 是面向影视创作和个人素材整理的本地工作台。由 Windows
 2. 打开 **MshTV 启动管理中心**，点击 **启动 MshTV**，浏览器会打开工作空间。
 3. 新建一张画布，拖入图片、视频或音频，或在素材库添加要监控的 Windows 文件夹。
 
-安装包包含 .NET 运行时、FFmpeg 和 ffprobe。安装后即可离线生成缩略图、视频封面和音频波形。视频与音频播放使用浏览器支持的格式。
+安装包内置 .NET 运行时、FFmpeg 9.0.2 和 ffprobe。安装后即可离线生成缩略图、视频封面和音频波形。视频与音频播放使用浏览器支持的格式。
 
-## 用它做什么
+## 界面设计与 HDR 高光
+
+浅色主题以银灰分栏、细描边和轻阴影衬托素材，深色主题用低亮度的界面和琥珀暖光突出当前选择。图片、视频和备注使用统一的圆角。选中时，卡片微微抬起，暖光沿轮廓展开，整理密集的分镜时也容易认出当前选区。
 
 ![MshTV 浅色界面上的镜头分组、参考图片和备注](docs/images/canvas.png)
+
+<details>
+<summary>查看深色主题与选中效果</summary>
+
+![MshTV 深色主题中的暖色选中光晕](docs/images/canvas-dark.png)
+
+</details>
+
+网页右上角的「设置」可开启 **HDR 选中光晕**。在支持 HDR 输出的浏览器、系统和显示器上，浅色主题的选中边缘能亮过普通 SDR 白。两种主题都可通过闪光弹模式体验更强的 HDR 高光。深色主题的常规选中效果和不支持 HDR 的设备使用 SDR 暖光。
+
+## 用它做什么
 
 | 功能 | 使用场景 |
 | --- | --- |
@@ -35,9 +52,11 @@ MshTV 是面向影视创作和个人素材整理的本地工作台。由 Windows
 
 监控目录中的原始素材以引用方式管理。浏览器直接拖入未登记的文件时，MshTV 会在项目数据目录保存一份导入副本。删除画布或库内记录时保留外部原件。
 
-## 从 Mac 访问
+## 从其他设备访问
 
-目前可以从 Mac 浏览器访问 Windows 主机。在主机上进入「设置 → 局域网访问」，启用连接并按提示信任证书、配对设备即可。近期可能发布一个 **macOS 连接启动器**，帮助 Mac 更方便地连接 Windows 后端，发布时间待定。
+在 Windows 主机上进入「设置 → 局域网访问」，启用连接。同一局域网中的 Mac、其他 Windows 电脑、平板或手机，可在浏览器打开主机显示的 HTTPS 地址，按提示信任证书并配对。
+
+近期可能发布一个 **macOS 连接启动器**，方便 Mac 连接 Windows 后端，发布时间待定。
 
 ## 源码与文档
 

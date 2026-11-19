@@ -5,7 +5,7 @@
   #define ProductKey "MshTV"
 #endif
 #ifndef ProductVersion
-  #define ProductVersion "0.9.3"
+  #define ProductVersion "0.9.4"
 #endif
 
 [Setup]

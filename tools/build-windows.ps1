@@ -1,5 +1,5 @@
 param(
-    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version = '0.9.3',
+    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version = '0.9.4',
     [string]$Compiler,
     [string]$MediaKit,
     [switch]$TestPackage

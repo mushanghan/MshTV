@@ -109,7 +109,7 @@ and bundled components are included in this directory.
 
 The complete source archives and build script for this media build are
 available with the Windows installer on GitHub Releases:
-https://github.com/mushanghan/MshTV/releases/tag/v0.9.3
+https://github.com/mushanghan/MshTV/releases
 
 Build documentation: https://github.com/mushanghan/MshTV/blob/main/docs/FFMPEG.md
 '@ | Set-Content -LiteralPath (Join-Path $licenses 'README.txt') -Encoding utf8
